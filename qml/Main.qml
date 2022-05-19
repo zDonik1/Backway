@@ -49,6 +49,8 @@ App {
 
     // view
     Loader {
-        source:
+        anchors.fill: parent
+        asynchronous: isPublishStage
+        source: isPublishStage ? "" : "View.qml"
     }
 }
