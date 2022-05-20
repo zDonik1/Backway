@@ -20,7 +20,8 @@ CONFIG(debug, debug|release) {
 
     # Add more folders to ship with the application here
 } else {
-    DEFINES += "PRODUCT_LICENSE_KEY=\"$$PRODUCT_LICENSE_KEY\""
+    defined(PRODUCT_LICENSE_KEY, var): \
+        DEFINES += "PRODUCT_LICENSE_KEY=\"$$PRODUCT_LICENSE_KEY\""
     RESOURCES += resources.qrc # uncomment for publishing
 }
 
