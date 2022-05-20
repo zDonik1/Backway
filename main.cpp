@@ -4,18 +4,15 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-// uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
-#include <FelgoLiveClient>
-
 #ifdef QT_NO_DEBUG
 constexpr auto PUBLISH = true;
 #else
+#include <FelgoLiveClient>
 constexpr auto PUBLISH = false;
 #endif
 
 int main(int argc, char *argv[])
 {
-
   QApplication app(argc, argv);
 
   FelgoApplication felgo;
@@ -31,14 +28,13 @@ int main(int argc, char *argv[])
   felgo.setLicenseKey(PRODUCT_LICENSE_KEY);
 
   engine.rootContext()->setContextProperty("isPublishStage", PUBLISH);
-  felgo.setMainQmlFileName(PUBLISH ? QStringLiteral("qrc:/qml/Main.qml")
-                                   : QStringLiteral("qml/Main.qml"));
 
+#ifdef QT_NO_DEBUG
+  felgo.setMainQmlFileName(QStringLiteral("qrc:/qml/Main.qml"));
   engine.load(QUrl(felgo.mainQmlFileName()));
-
-  // to start your project as Live Client, comment (remove) the lines "felgo.setMainQmlFileName ..." & "engine.load ...",
-  // and uncomment the line below
-  FelgoLiveClient client (&engine);
+#else
+  FelgoLiveClient client(&engine);
+#endif
 
   return app.exec();
 }
