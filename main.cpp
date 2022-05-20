@@ -11,9 +11,12 @@ constexpr auto PUBLISH = true;
 constexpr auto PUBLISH = false;
 #endif
 
+constexpr auto REMOTE_VIEW_DIR = "http://zdonik.mukhtarov.net:8000";
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
+  const auto VIEWS_ROOT = PUBLISH ? REMOTE_VIEW_DIR : app.applicationDirPath() + "/qml/views";
 
   FelgoApplication felgo;
 
@@ -28,7 +31,9 @@ int main(int argc, char *argv[])
   felgo.setLicenseKey(PRODUCT_LICENSE_KEY);
 
   engine.rootContext()->setContextProperty("isPublishStage", PUBLISH);
-  engine.addImportPath(PUBLISH ? "http://zdonik.mukhtarov.net:8000" : "qml/views");
+  engine.rootContext()->setContextProperty(
+      "mainView", QString("%1/%2").arg(VIEWS_ROOT, "View.qml"));
+  engine.addImportPath(VIEWS_ROOT);
 
 #ifdef QT_NO_DEBUG
   felgo.setMainQmlFileName(QStringLiteral("qrc:/qml/Main.qml"));
