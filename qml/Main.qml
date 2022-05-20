@@ -51,7 +51,7 @@ App {
     Loader {
         anchors.fill: parent
         asynchronous: isPublishStage
-        source: isPublishStage ? "http://zdonik.mukhtarov.net:8000/views/View.qml"
+        source: isPublishStage ? "http://zdonik.mukhtarov.net:8000/View.qml"
                                : "views/View.qml"
     }
 }
