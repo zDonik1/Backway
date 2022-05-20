@@ -17,8 +17,6 @@ CONFIG(debug, debug|release) {
 
     assetsFolder.source = assets
     DEPLOYMENTFOLDERS += assetsFolder
-
-    # Add more folders to ship with the application here
 } else {
     defined(PRODUCT_LICENSE_KEY, var): \
         DEFINES += "PRODUCT_LICENSE_KEY=\"$$PRODUCT_LICENSE_KEY\""

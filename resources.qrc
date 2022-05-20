@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>qml/config.json</file>
         <file>qml/Main.qml</file>
         <file>qml/logic/Logic.qml</file>
         <file>qml/logic/ViewHelper.qml</file>
