@@ -31,8 +31,7 @@ int main(int argc, char *argv[])
   felgo.setLicenseKey(PRODUCT_LICENSE_KEY);
 
   engine.rootContext()->setContextProperty("isPublishStage", PUBLISH);
-  engine.rootContext()->setContextProperty(
-      "mainView", QString("%1/%2").arg(VIEWS_ROOT, "View.qml"));
+  engine.rootContext()->setContextProperty("viewRoot", VIEWS_ROOT);
   engine.addImportPath(VIEWS_ROOT);
 
 #ifdef QT_NO_DEBUG

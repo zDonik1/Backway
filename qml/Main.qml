@@ -1,25 +1,31 @@
 import Felgo 3.0
 import QtQuick 2.0
+import QtQuick.Layouts 1.15
+
 import "model"
 import "logic"
 
 
 App {
-    // You get free licenseKeys from https://felgo.com/licenseKey
-    // With a licenseKey you can:
-    //  * Publish your games & apps for the app stores
-    //  * Remove the Felgo Splash Screen or set a custom one (available with the Pro Licenses)
-    //  * Add plugins to monetize, analyze & improve your apps (available with the Pro Licenses)
-    //licenseKey: "<generate one from https://felgo.com/licenseKey>"
+    function checkServerAccess() {
+        if(isOnline) {
+            logic.clearCache()
+
+            if (isPublishStage) {
+                HttpRequest
+                .head(viewRoot)
+                .end((err, res) => {
+                         if (!res.ok) {
+                             stack.currentIndex = 1
+                         }
+                     });
+            }
+        }
+    }
 
     // app initialization
     Component.onCompleted: {
-        // if device has network connection, clear cache at startup
-        // you'll probably implement a more intelligent cache cleanup for your app
-        // e.g. to only clear the items that aren't required regularly
-        if(isOnline) {
-            logic.clearCache()
-        }
+        checkServerAccess()
 
         // fetch todo list data
         logic.fetchTodos()
@@ -48,9 +54,33 @@ App {
     }
 
     // view
-    Loader {
+    StackLayout {
+        id: stack
         anchors.fill: parent
-        asynchronous: isPublishStage
-        source: mainView
+        currentIndex: !isOnline ? 1 : viewLoader.status === Loader.Ready ? 2 : 0
+
+        Page {
+            AppActivityIndicator {
+                id: networkIndicator
+                anchors.centerIn: parent
+                iconSize: dp(50)
+                hidesWhenStopped: true
+                animating: viewLoader.status === Loader.Loading
+            }
+        }
+
+        Page {
+            AppText {
+                anchors.centerIn: parent
+                text: qsTr("Failed to connect to server.\nPlease check your internet connetion")
+                horizontalAlignment: Text.AlignHCenter
+            }
+        }
+
+        Loader {
+            id: viewLoader
+            asynchronous: isPublishStage
+            source: viewRoot + "/View.qml"
+        }
     }
 }
