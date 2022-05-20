@@ -7,6 +7,12 @@
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 #include <FelgoLiveClient>
 
+#ifdef QT_NO_DEBUG
+constexpr auto PUBLISH = true;
+#else
+constexpr auto PUBLISH = false;
+#endif
+
 int main(int argc, char *argv[])
 {
 
@@ -20,19 +26,13 @@ int main(int argc, char *argv[])
   QQmlApplicationEngine engine;
   felgo.initialize(&engine);
 
-  // Getting view root from either local or remote qml file
-
   // Set an optional license key from project file
   // This does not work if using Felgo Live, only for Felgo Cloud Builds and local builds
   felgo.setLicenseKey(PRODUCT_LICENSE_KEY);
 
-#ifdef QT_NO_DEBUG
-  engine.rootContext()->setContextProperty("isPublishStage", true);
-  felgo.setMainQmlFileName(QStringLiteral("qrc:/qml/Main.qml"));
-#else
-  engine.rootContext()->setContextProperty("isPublishStage", false);
-  felgo.setMainQmlFileName(QStringLiteral("qml/Main.qml"));
-#endif
+  engine.rootContext()->setContextProperty("isPublishStage", PUBLISH);
+  felgo.setMainQmlFileName(PUBLISH ? QStringLiteral("qrc:/qml/Main.qml")
+                                   : QStringLiteral("qml/Main.qml"));
 
   engine.load(QUrl(felgo.mainQmlFileName()));
 
