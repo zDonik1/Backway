@@ -4,13 +4,19 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-// uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
+#ifdef QT_NO_DEBUG
+constexpr auto PUBLISH = true;
+#else
 #include <FelgoLiveClient>
+constexpr auto PUBLISH = false;
+#endif
+
+constexpr auto REMOTE_VIEW_DIR = "http://zdonik.mukhtarov.net:8000";
 
 int main(int argc, char *argv[])
 {
-
   QApplication app(argc, argv);
+  const auto VIEWS_ROOT = PUBLISH ? REMOTE_VIEW_DIR : app.applicationDirPath() + "/qml/views";
 
   FelgoApplication felgo;
 
@@ -20,25 +26,20 @@ int main(int argc, char *argv[])
   QQmlApplicationEngine engine;
   felgo.initialize(&engine);
 
-  // Getting view root from either local or remote qml file
-
   // Set an optional license key from project file
   // This does not work if using Felgo Live, only for Felgo Cloud Builds and local builds
   felgo.setLicenseKey(PRODUCT_LICENSE_KEY);
 
+  engine.rootContext()->setContextProperty("isPublishStage", PUBLISH);
+  engine.rootContext()->setContextProperty("viewRoot", VIEWS_ROOT);
+  engine.addImportPath(VIEWS_ROOT);
+
 #ifdef QT_NO_DEBUG
-  engine.rootContext()->setContextProperty("isPublishStage", true);
   felgo.setMainQmlFileName(QStringLiteral("qrc:/qml/Main.qml"));
-#else
-  engine.rootContext()->setContextProperty("isPublishStage", false);
-  felgo.setMainQmlFileName(QStringLiteral("qml/Main.qml"));
-#endif
-
   engine.load(QUrl(felgo.mainQmlFileName()));
-
-  // to start your project as Live Client, comment (remove) the lines "felgo.setMainQmlFileName ..." & "engine.load ...",
-  // and uncomment the line below
-  FelgoLiveClient client (&engine);
+#else
+  FelgoLiveClient client(&engine);
+#endif
 
   return app.exec();
 }

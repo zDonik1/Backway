@@ -3,7 +3,7 @@ CONFIG += felgo
 
 # uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 # for the remaining steps to build a custom Live Code Reload app see here: https://felgo.com/custom-code-reload-app/
-CONFIG += felgo-live
+CONFIG(debug, debug|release):CONFIG += felgo-live
 
 # Project identifier and version
 # More information: https://felgo.com/doc/felgo-publishing/#project-configuration
@@ -17,10 +17,9 @@ CONFIG(debug, debug|release) {
 
     assetsFolder.source = assets
     DEPLOYMENTFOLDERS += assetsFolder
-
-    # Add more folders to ship with the application here
 } else {
-    DEFINES += "PRODUCT_LICENSE_KEY=\"$$PRODUCT_LICENSE_KEY\""
+    defined(PRODUCT_LICENSE_KEY, var): \
+        DEFINES += "PRODUCT_LICENSE_KEY=\"$$PRODUCT_LICENSE_KEY\""
     RESOURCES += resources.qrc # uncomment for publishing
 }
 

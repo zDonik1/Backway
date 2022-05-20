@@ -1,0 +1,3 @@
+module pages
+TodoDetailPage 1.0 TodoDetailPage.qml
+TodoListPage 1.0 TodoListPage.qml
