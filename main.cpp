@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
   felgo.setLicenseKey(PRODUCT_LICENSE_KEY);
 
   engine.rootContext()->setContextProperty("isPublishStage", PUBLISH);
+  engine.addImportPath("qml/views");
 
 #ifdef QT_NO_DEBUG
   felgo.setMainQmlFileName(QStringLiteral("qrc:/qml/Main.qml"));
